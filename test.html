@@ -1,0 +1,161 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Title</title>
+  <style type="text/css">
+    * {
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+
+    }
+
+    #app {
+      overflow: hidden;
+      height: 100vh;
+    }
+
+    #pages {
+      position: relative;
+      top: 0;
+      transition: .5s;
+    }
+
+    #pages li {
+      height: 100vh;
+      font-size: 60px;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+    }
+
+    #pages li:nth-child(1) {
+      background: #373e48;
+      color: gray;
+    }
+
+    #pages li:nth-child(2) {
+      background: #e37778;
+      color: white;
+    }
+
+    #pages li:nth-child(3) {
+      background: #44a1d8;
+      color: white;
+    }
+
+    #pages li:nth-child(4) {
+      background: #48c361;
+      color: white;
+    }
+
+    #pages li:nth-child(5) {
+      background: #af27c5;
+      color: white;
+    }
+
+    #nav {
+      position: fixed;
+      top: calc((100vh - 200px) / 2);
+      right: 20px;
+      width: 20px;
+      height: 150px;
+    }
+
+    #nav > div {
+      width: 20px;
+      height: 20px;
+      margin: 10px;
+      border-radius: 50%;
+      background: white;
+      font-size: 10px;
+      text-align: center;
+      line-height: 20px;
+      transition: .3s;
+    }
+
+    #nav > div.selected {
+      background: rgb(49, 194, 124);
+      color: white;
+    }
+  </style>
+</head>
+<body>
+
+<div id="app">
+  <ul id="pages">
+    <li>page01</li>
+    <li>page02</li>
+    <li>page03</li>
+    <li>page04</li>
+    <li>page05</li>
+  </ul>
+  <div id="nav">
+    <div class="selected">01</div>
+    <div>02</div>
+    <div>03</div>
+    <div>04</div>
+    <div>05</div>
+  </div>
+</div>
+</body>
+<script type="text/javascript">
+  window.onload = function () {
+    let currentPageIndex = 0;//定义初始化的当前页索引
+    let timesTemp = 0;//用于处理滚轮事件重复执行的变量
+    //添加鼠标滚轮监听
+    const addMouseWheeListen = () => {
+      if (document.addEventListener) {
+        document.addEventListener('DOMMouseScroll', handleMouseWheel, false);
+      }//W3C
+      window.onmousewheel = document.onmousewheel = handleMouseWheel;//IE/Opera/Chrome
+    };
+
+
+    let scrollToPage = (pageIndex) => {
+      console.log(pageIndex)
+      let OpageUl = document.getElementById('pages');
+      OpageUl.style.top = `${-(pageIndex) * 100}vh`;
+    };
+
+    let handleMouseWheel = (e) => {
+      e = e || window.event;
+      e.defaultPrevented;
+      let date = new Date().getTime();
+      console.log("时间戳", date, date - timesTemp)
+      if (date - timesTemp > 500) {
+        let Opages = document.querySelectorAll('#pages > li');
+        if (e.wheelDelta) {//IE/Opera/Chrome
+          console.log(e.wheelDelta)
+          if (e.wheelDelta < 0) {
+            //  如果是负数，则鼠标往下滚
+            if (currentPageIndex < Opages.length - 1) {
+              scrollToPage(++currentPageIndex);
+            } else if (currentPageIndex === Opages.length - 1) {
+              currentPageIndex = 0;
+              scrollToPage(currentPageIndex);
+            }
+          }
+          if (e.wheelDelta > 0) {
+            //  如果是负数，则鼠标往上滚
+            if (currentPageIndex > 0) {
+              scrollToPage(--currentPageIndex);
+            } else if (currentPageIndex === 0) {
+              currentPageIndex = Opages.length - 1;
+              scrollToPage(currentPageIndex);
+            }
+          }
+        } else if (e.detail) {//Firefox
+          console.log(e.detail)
+        }
+        timesTemp = date;
+      }
+    };
+
+    addMouseWheeListen();
+  }
+</script>
+</html>
